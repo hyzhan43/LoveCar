@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "zqx.rj.com.lovecar"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    buildToolsVersion '26.0.2'
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+
+    // Tabyout
+    compile 'com.android.support:design:26.1.0'
+    // 底部导航栏
+    compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.3'
+    // 悬浮按钮
+    compile 'com.github.lilei644:SpringActionMenu:1.0.1'
+    // 轮播图
+    compile 'com.youth.banner:banner:1.4.10'
+    // Picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    // 沉浸式状态栏
+    compile 'com.gyf.barlibrary:barlibrary:2.3.0'
+    // CircleImageView
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    // 导入 Okhttp框架
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    // 卡片式布局
+    compile 'com.android.support:cardview-v7:26.1.0'
+    // 屏幕适配     https://github.com/yatoooon/AndroidScreenAdaptation
+    implementation 'me.yatoooon:screenadaptation:1.0.8'
+    // 数量选择框架
+    compile 'com.github.mcxtzhang:AnimShopButton:V1.0.0'
+    // Gson
+    compile 'com.google.code.gson:gson:2.7'
+    // 时间选择器
+    compile 'com.contrarywind:Android-PickerView:4.1.3'
+    // 高德地图
+//    compile 'com.amap.api:3dmap:latest.integration'
+    compile 'com.amap.api:search:latest.integration'
+    // 长按事件
+    compile 'me.samthompson:bubble-actions:1.3.0'
+    // 添加 极光IM 即时通讯模块
+    implementation files('libs/jcore-android-1.1.9.jar')
+    implementation files('libs/jmessage-android_v2.5.0.jar')
+    // 水滴刷新
+    compile 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
+    // 侧滑功能
+    compile 'com.baoyz.swipemenulistview:library:1.3.0'
+    // litePal 数据库框架
+    compile 'org.litepal.android:core:1.6.1'
+}

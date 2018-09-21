@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--CheckBox 选框颜色-->
+    <style name="My_CheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
+        <item name="android:colorControlActivated">@color/color_main</item>
+        <item name="android:colorControlNormal">@color/color_gray</item>
+    </style>
+</resources>

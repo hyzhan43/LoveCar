@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="color_white">#ffffff</color>
+    <color name="color_bg">#F0F0F0</color>
+    <color name="color_black">#000000</color>
+    <color name="color_gray">#B5B5B5</color>
+    <color name="color_light_gray">#CECECE</color>
+    <color name="color_light_gray2">#F8F8FF</color>
+    <!-- 主色调 -->
+    <color name="color_main">#71D54C</color>
+    <color name="gray">#EEEEEE</color>
+
+    <color name="color_press">#7CCD7C</color>
+
+    <!-- action menu color -->
+    <color name="menuNormalGreen">#ff90FB98</color>
+    <color name="menuPressGreen">#ff98ff90</color>
+    <color name="menuNormalYellow">#FFD700</color>
+    <color name="menuPressYellow">#FFEC8B</color>
+    <color name="menuNormalRed">#FF6A6A</color>
+    <color name="menuPressRed">#FA8072</color>
+    <color name="menuNormalBlue">#B0E2FF</color>
+    <color name="menuPressBlue">#BCD2EE</color>
+</resources>

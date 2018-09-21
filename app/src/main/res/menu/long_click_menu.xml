@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/action_good"
+        android:icon="@drawable/ic_good"
+        android:title="good"/>
+
+    <item android:id="@+id/action_love"
+        android:icon="@drawable/ic_love"
+        android:title="love" />
+
+    <item android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        android:title="share"/>
+
+</menu>

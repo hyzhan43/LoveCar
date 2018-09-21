@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        android:background="#FFFFFF"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="15dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <RelativeLayout
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/ic_time"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_time"/>
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2017-10-10 10:20"
+                    android:textColor="#FF4500"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ic_time"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/main_size"
+                    android:layout_centerVertical="true"
+                    android:text="余："
+                    android:textSize="20dp"/>
+
+                <TextView
+                    android:id="@+id/main_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/main_size_right"
+                    android:layout_centerVertical="true"
+                    android:text="20"
+                    android:textSize="20dp"/>
+
+                <TextView
+                    android:id="@+id/main_size_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="张票"
+                    android:textSize="20dp"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/start_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:id="@+id/ic_start_place"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/green_point" />
+
+                <TextView
+                    android:id="@+id/tv_start_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="广州河源"
+                    android:maxLines="1"
+                    android:maxEms="14"
+                    android:ellipsize="end"
+                    android:layout_toRightOf="@+id/ic_start_place"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="10dp"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/start_place"
+                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:id="@+id/ic_end_place"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/red_point" />
+
+                <TextView
+                    android:id="@+id/tv_end_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="广州河源"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:maxEms="14"
+                    android:layout_toRightOf="@+id/ic_end_place"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="10dp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/main_price"
+                android:layout_toLeftOf="@+id/main_price"
+                android:layout_centerHorizontal="true"
+                android:text="￥"
+                android:textColor="#EE3B3B"
+                android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/main_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/start_place"
+                android:layout_alignRight="@+id/start_place"
+                android:layout_centerHorizontal="true"
+                android:text="80"
+                android:textColor="#EE3B3B"
+                android:textSize="20dp"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
+
