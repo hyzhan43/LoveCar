@@ -83,7 +83,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
         account_name = view.findViewById(R.id.account_name);
         UserInfo userInfo = JMessageClient.getMyInfo();
-        //account_name.setText(userInfo.getNickname());
+        account_name.setText(userInfo.getNickname());
     }
 
 

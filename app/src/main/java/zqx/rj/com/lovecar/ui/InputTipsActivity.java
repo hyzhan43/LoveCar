@@ -65,10 +65,6 @@ public class InputTipsActivity extends BaseActivity implements SearchView.OnQuer
     public void onGetInputtips(List<Tip> tipList, int rCode) {
         if (rCode == 1000) {// 正确返回
             mCurrentTipList = tipList;
-            List<String> listString = new ArrayList<>();
-            for (int i = 0; i < tipList.size(); i++) {
-                listString.add(tipList.get(i).getName());
-            }
             mIntipAdapter = new InputTipsAdapter(getApplicationContext(), mCurrentTipList);
             mInputListView.setAdapter(mIntipAdapter);
             mIntipAdapter.notifyDataSetChanged();

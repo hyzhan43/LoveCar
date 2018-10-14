@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,15 +42,15 @@ public class UtilTools {
         textView.setTypeface(fontType);
     }
 
-    public static void updateIcon(Context context, CircleImageView account_icon) {
+    public static void updateIcon(Context context, ImageView account_icon) {
         String url = ShareUtils.getString(context, "icon_url", "");
+        Log.d("LST", url + "---");
         if (TextUtils.isEmpty(url)){
             account_icon.setImageResource(R.mipmap.ic_launcher);
         }else {
-            Uri uri = Uri.parse(url);
             //Picasso 加载图片简单用法
             Picasso.with(context)
-                    .load(uri)
+                    .load(url)
                     .error(R.mipmap.ic_launcher)
                     .into(account_icon);
         }

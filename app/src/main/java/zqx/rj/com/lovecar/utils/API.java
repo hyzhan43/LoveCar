@@ -17,8 +17,8 @@ public class API {
     public static final String BANNER_PIC3 = "http://203.195.193.66/chartered_bus/Public/images/banner/3.jpg";
     public static final String BANNER_PIC4 = "http://203.195.193.66/chartered_bus/Public/images/banner/4.jpg";
 
-//    private static final String BASE_URL = "http://203.195.193.66/index.php/Home";
-    private static final String BASE_URL = "http://110.64.211.34/index.php/Home";
+    private static final String BASE_URL = "http://203.195.193.66/index.php/Home";
+//    private static final String BASE_URL = "http://110.64.211.34/index.php/Home";
 
     // 最新路线 url
     public static final String NEW_ROUNTE = BASE_URL + "/Ticket/getTickets";

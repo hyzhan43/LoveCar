@@ -118,4 +118,5 @@
     <string name="input_empty_info">请输入完整信息</string>
     <string name="seat">座</string>
     <string name="seat_number">数量</string>
+    <string name="ticket_moments">票圈</string>
 </resources>

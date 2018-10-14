@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
-
     <!-- 极光即时通讯 -->
     <permission
         android:name="zqx.rj.com.lovecar.permission.JPUSH_MESSAGE"
@@ -32,7 +31,6 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-
 
     <application
         android:name=".application.BaseApplication"
@@ -193,7 +191,10 @@
         <!-- 同路人 页面 -->
         <activity android:name=".ui.SamePeopleActivity" />
         <activity android:name=".ui.PublishActivity" />
-        <activity android:name=".ui.PublishSucActivity"/>
+        <activity android:name=".ui.PublishSucActivity" />
+        <activity android:name=".ui.MomentsActivity" />
+        <activity android:name=".ui.GuideActivity" />
+        <activity android:name=".ui.TravelActivity"></activity>
     </application>
 
 </manifest>

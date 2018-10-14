@@ -40,10 +40,13 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.NewRounteAdapter;
 import zqx.rj.com.lovecar.entity.NewRounteData;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.ui.GuideActivity;
 import zqx.rj.com.lovecar.ui.LikeActivity;
+import zqx.rj.com.lovecar.ui.MomentsActivity;
 import zqx.rj.com.lovecar.ui.SamePeopleActivity;
 import zqx.rj.com.lovecar.ui.SearchTicketsActivity;
 import zqx.rj.com.lovecar.ui.TicketActivity;
+import zqx.rj.com.lovecar.ui.TravelActivity;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ScreenTools;
@@ -106,6 +109,16 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
                 break;
             case R.id.ll_same_people:
                 intent = new Intent(getActivity(), SamePeopleActivity.class);
+                break;
+            case R.id.ll_tickets_moments:
+                intent = new Intent(getActivity(), MomentsActivity.class);
+                break;
+            case R.id.ll_home_guide:
+                intent = new Intent(getActivity(), GuideActivity.class);
+                break;
+            case R.id.ll_travel:
+                intent = new Intent(getActivity(), TravelActivity.class);
+                T.show(getContext(), "该功能暂未实现");
                 break;
         }
 
@@ -279,6 +292,18 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
         // 同路人
         ll_same_people = headView.findViewById(R.id.ll_same_people);
         ll_same_people.setOnClickListener(this);
+
+        // 回家指南
+        LinearLayout mGuide = headView.findViewById(R.id.ll_home_guide);
+        mGuide.setOnClickListener(this);
+
+        // 票圈
+        LinearLayout mMoments = headView.findViewById(R.id.ll_tickets_moments);
+        mMoments.setOnClickListener(this);
+
+        // 轻旅游
+        LinearLayout mTravel = headView.findViewById(R.id.ll_travel);
+        mTravel.setOnClickListener(this);
     }
 
     // 长按事件
