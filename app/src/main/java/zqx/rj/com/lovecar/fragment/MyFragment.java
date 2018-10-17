@@ -1,11 +1,7 @@
 package zqx.rj.com.lovecar.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,7 +13,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.ui.ImformationActivity;
 import zqx.rj.com.lovecar.ui.SettingActivity;
-import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.UtilTools;
 
@@ -30,7 +25,7 @@ import zqx.rj.com.lovecar.utils.UtilTools;
  * 描述：    我的
  */
 
-public class MyFragment extends Fragment implements View.OnClickListener {
+public class MyFragment extends BaseFragment implements View.OnClickListener {
 
 //    private static final int REQUEST_ICON = 1;
 //    private static final int RESULT_ICON = 4;
@@ -44,21 +39,17 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private CircleImageView account_icon;
     private TextView account_name;
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_my, null);
-        // 屏幕适配
-        ScreenTools.fragment(view);
+    public int getLayoutId() {
+        return R.layout.frag_my;
+    }
+
+    @Override
+    public void initView(View view) {
 
         // 沉浸式状态栏
         ImmersionBar.with(this).init();
-        findView(view);
-
-        return view;
-    }
-
-
-    private void findView(View view) {
 
         ll_setting = view.findViewById(R.id.ll_setting);
         ll_setting.setOnClickListener(this);

@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,12 +28,10 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.OrderDetailAdapter;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
 import zqx.rj.com.lovecar.entity.OrderData;
-import zqx.rj.com.lovecar.entity.response.BaseResponse;
 import zqx.rj.com.lovecar.entity.response.OrderRsp;
 import zqx.rj.com.lovecar.ui.OrderDetailActivity;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
-import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
 import zqx.rj.com.lovecar.utils.UtilTools;
@@ -45,7 +40,7 @@ import zqx.rj.com.lovecar.view.CustomDialog;
 /**
  *
  */
-public class OrderStateFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class OrderStateFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
     private ListView list_already;
     private List<OrderData> tickets = new ArrayList<>();
@@ -99,14 +94,8 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_state, null);
-
-        // 屏幕适配
-        ScreenTools.fragment(view);
-
-        initView(view);
-        return view;
+    public int getLayoutId() {
+        return R.layout.fragment_order_state;
     }
 
     @Override
@@ -206,7 +195,8 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
         }
     }
 
-    private void initView(View view) {
+    @Override
+    public void initView(View view) {
 
         list_already = view.findViewById(R.id.list_already);
         adapter = new OrderDetailAdapter(getActivity(), tickets);

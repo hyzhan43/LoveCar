@@ -1,11 +1,11 @@
 package zqx.rj.com.lovecar;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -14,13 +14,12 @@ import com.lilei.springactionmenu.OnActionItemClickListener;
 
 import zqx.rj.com.lovecar.fragment.MainFragment;
 import zqx.rj.com.lovecar.fragment.MyFragment;
-import zqx.rj.com.lovecar.fragment.NewsFragment;
+import zqx.rj.com.lovecar.fragment.NewsTabFragment;
 import zqx.rj.com.lovecar.fragment.OrderFragment;
 import zqx.rj.com.lovecar.ui.BaseActivity;
 import zqx.rj.com.lovecar.ui.LikeActivity;
 import zqx.rj.com.lovecar.ui.PublishActivity;
 import zqx.rj.com.lovecar.ui.SearchTicketsActivity;
-import zqx.rj.com.lovecar.utils.T;
 
 import static com.ashokvarma.bottomnavigation.BottomNavigationBar.BACKGROUND_STYLE_RIPPLE;
 
@@ -95,7 +94,8 @@ public class MainActivity extends BaseActivity {
                         break;
                     case 1:
                         if (mNewsFragment == null) {
-                            mNewsFragment = new NewsFragment();
+//                            mNewsFragment = new NewsFragment();
+                            mNewsFragment = new NewsTabFragment();
                         }
                         switchContent(mContent, mNewsFragment);
                         break;
@@ -139,11 +139,13 @@ public class MainActivity extends BaseActivity {
             FragmentTransaction transaction = fm.beginTransaction();
             if (!to.isAdded()) {
                 // 隐藏当前的 fragment， add 下一个到 Activity中
-                transaction.hide(from).add(R.id.fragment_content, to).commit();
+                transaction.hide(from).add(R.id.fragment_content, to);
             } else {
                 // 隐藏当前的 fragment 显示下一个
-                transaction.hide(from).show(to).commit();
+                transaction.hide(from).show(to);
             }
+
+            transaction.commit();
         }
     }
 

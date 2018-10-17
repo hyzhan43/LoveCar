@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -30,6 +31,7 @@ import cn.jpush.im.android.api.model.UserInfo;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.NewsAdapter;
 import zqx.rj.com.lovecar.ui.ChatMsgActivity;
+import zqx.rj.com.lovecar.ui.StatisticeActivity;
 import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.ShareUtils;
 import zqx.rj.com.lovecar.utils.StaticClass;
@@ -45,7 +47,7 @@ import static cn.jpush.im.android.api.jmrtc.JMRTCInternalUse.getApplicationConte
  * 描述：    消息
  */
 
-public class NewsFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class NewsFragment extends BaseFragment implements AdapterView.OnItemClickListener{
 
     private SwipeMenuListView lv_chat;
     private List<Conversation> conversationList;
@@ -55,10 +57,10 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     private SwipeMenuCreator creator;
     private SwipeMenuItem deleteItem;
 
-    private class MyHandler extends Handler{
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.RECEIVE_SUCCESS:
                     // 更新会话列表
                     updateDatas();
@@ -68,36 +70,32 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_news, null);
-
-        init(view);
-        // 初始化数据
-        initData();
-        // 初始化
-        findView(view);
-
-        return view;
+    public int getLayoutId() {
+        return R.layout.frag_news;
     }
 
-    private void init(View view) {
-        // 屏幕适配
-        ScreenTools.fragment(view);
+    @Override
+    public void initView(View view) {
         // 注册监听
         JMessageClient.registerEventReceiver(this);
 
         handler = new MyHandler();
+
     }
 
-    private void initData() {
+    @Override
+    public void initData() {
         conversationList = new ArrayList<>();
         List<Conversation> conversations = JMessageClient.getConversationList();
-        if (conversations != null){
+        if (conversations != null) {
             conversationList.addAll(conversations);
         }
+
+        findView(getView());
     }
 
     private void findView(View view) {
+
         lv_chat = view.findViewById(R.id.lv_chat);
         adapter = new NewsAdapter(conversationList, getActivity());
         lv_chat.setAdapter(adapter);
@@ -111,7 +109,7 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 // 获取当前会话
                 Conversation conversation = conversationList.get(position);
-                switch (index){
+                switch (index) {
                     case StaticClass.DELETE_CODE:
                         deletedConversation(conversation);
                         break;
@@ -162,13 +160,14 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
 
         // 重置单个会话未读消息数
         boolean reset = conversation.resetUnreadCount();
-        if (reset){
+        if (reset) {
             adapter.notifyDataSetChanged();
         }
         intent.putExtra("position", position);
 
         startActivity(intent);
     }
+
 
     // 收到消息
     public void onEvent(MessageEvent event) {
@@ -179,7 +178,7 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     private void updateDatas() {
         conversationList.clear();
         List<Conversation> conversations = JMessageClient.getConversationList();
-        if (conversations != null){
+        if (conversations != null) {
             conversationList.addAll(conversations);
             adapter.notifyDataSetChanged();
         }

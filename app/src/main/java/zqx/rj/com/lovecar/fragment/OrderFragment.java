@@ -1,19 +1,15 @@
 package zqx.rj.com.lovecar.fragment;
 
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.OrderAdapter;
-import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.StaticClass;
 
 /**
@@ -25,52 +21,37 @@ import zqx.rj.com.lovecar.utils.StaticClass;
  * 描述：    订单
  */
 
-public class OrderFragment extends Fragment{
+public class OrderFragment extends BaseFragment {
 
-    private TabLayout mTab;
-    private ViewPager mFragmentpager;
-    private OrderAdapter mAdapter;
-    private List<Fragment> fragments;
-    private List<String> titles;
+    private ViewPager mFragmentPager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_order, null);
-        // 屏幕适配
-        ScreenTools.fragment(view);
-
-        initView(view);
-        initDatas();
-        return view;
+    public int getLayoutId() {
+        return R.layout.frag_order;
     }
 
-    private void initDatas() {
-        fragments = new ArrayList<>();
+    @Override
+    public void initView(View view) {
+        TabLayout tab = view.findViewById(R.id.tl_order);
+        mFragmentPager = view.findViewById(R.id.vp_content);
+        tab.setupWithViewPager(mFragmentPager);
+    }
 
+    @Override
+    public void initData() {
+        List<Fragment> fragments = new ArrayList<>();
         fragments.add(OrderStateFragment.newInstance(StaticClass.ORDER_ALREADY));
         fragments.add(OrderStateFragment.newInstance(StaticClass.ORDER_FINISH));
         fragments.add(OrderStateFragment.newInstance(StaticClass.ORDER_UNPAID));
         fragments.add(OrderStateFragment.newInstance(StaticClass.ORDER_CANCEL));
 
-        titles = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
         titles.add("已付款");
         titles.add("已完成");
         titles.add("未付款");
         titles.add("已取消");
 
-        mTab.addTab(mTab.newTab().setText(titles.get(0)));
-        mTab.addTab(mTab.newTab().setText(titles.get(1)));
-        mTab.addTab(mTab.newTab().setText(titles.get(2)));
-        mTab.addTab(mTab.newTab().setText(titles.get(3)));
-
-        mAdapter = new OrderAdapter(getFragmentManager(), fragments, titles);
-        mFragmentpager.setAdapter(mAdapter);
-        mTab.setupWithViewPager(mFragmentpager);
-    }
-
-    private void initView(View view) {
-
-        mTab = view.findViewById(R.id.tl_order);
-        mFragmentpager = view.findViewById(R.id.vp_content);
+        OrderAdapter adapter = new OrderAdapter(getChildFragmentManager(), fragments, titles);
+        mFragmentPager.setAdapter(adapter);
     }
 }

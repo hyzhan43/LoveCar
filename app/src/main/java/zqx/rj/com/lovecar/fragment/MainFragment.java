@@ -2,13 +2,10 @@ package zqx.rj.com.lovecar.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -64,7 +61,7 @@ import zqx.rj.com.lovecar.utils.UtilTools;
  * 描述：    首页
  */
 
-public class MainFragment extends Fragment implements AbsListView.OnScrollListener,
+public class MainFragment extends BaseFragment implements AbsListView.OnScrollListener,
         View.OnClickListener, AdapterView.OnItemLongClickListener,
         UpdateNewTicketsListener {
 
@@ -173,12 +170,14 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_main, null);
-        // 屏幕适配
-        ScreenTools.fragment(view);
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.frag_main;
+    }
+
+    @Override
+    public void initView(View view) {
         handler = new MyHandler(this);
 
 
@@ -192,8 +191,6 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
         initBanner(headView);
 
         ObserverManager.Holder.instance.register(this);
-
-        return view;
     }
 
     public void initNewRounteDatas(final int page) {
@@ -264,7 +261,6 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
     private void initListView(View view) {
 
         lv_new_rounte = view.findViewById(R.id.lv_new_rounte);
-//        newRounteDataList.addAll(tempList);
         adapter = new NewRounteAdapter(newRounteDataList, getActivity());
 
         initHeader();
