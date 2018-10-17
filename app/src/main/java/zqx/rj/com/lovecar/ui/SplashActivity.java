@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -16,6 +17,8 @@ import okhttp3.RequestBody;
 import zqx.rj.com.lovecar.MainActivity;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.LoginRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ShareUtils;
@@ -75,9 +78,9 @@ public class SplashActivity extends BaseActivity {
                     }
                     break;
                 case StaticClass.LOGIN_FAIL:
-                    if (msg.obj != null){
+                    if (msg.obj != null) {
                         T.show(SplashActivity.this, msg.obj.toString());
-                    }else {
+                    } else {
                         T.show(SplashActivity.this, getString(R.string.network_fail));
                     }
                     startActivity(new Intent(SplashActivity.this,
@@ -128,7 +131,8 @@ public class SplashActivity extends BaseActivity {
 
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.USER_LOGIN, body);
+                OkhttpResponse response = okHttp.post(SplashActivity.this,
+                        API.USER_LOGIN, body);
 
                 if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
@@ -140,6 +144,22 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void parseJson(String data) {
+        LoginRsp loginRsp = UtilTools.jsonToBean(data, LoginRsp.class);
+
+        if (loginRsp.getCode() == 1) {
+            String account = ShareUtils.getString(this, "account", "");
+            ShareUtils.putString(this, "token", loginRsp.getData().getAccessToken());
+            ShareUtils.putString(this, "phone", account);
+            handler.sendEmptyMessageDelayed(StaticClass.LOGIN_SUCCESS, 2000);
+        } else {
+            Message message = new Message();
+            message.obj = loginRsp.getMessage();
+            message.what = StaticClass.LOGIN_FAIL;
+            handler.sendMessage(message);
+        }
+    }
+
+    private void parseJson2(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
             String result = jsonObject.getString("code");
@@ -149,9 +169,9 @@ public class SplashActivity extends BaseActivity {
                 String icon = object.getString("thumb");
                 String phone = object.getString("phone");
 
-                ShareUtils.putString(this,"icon_url", icon);
-                ShareUtils.putString(this,"user_id", id);
-                ShareUtils.putString(this,"phone", phone);
+                ShareUtils.putString(this, "icon_url", icon);
+                ShareUtils.putString(this, "user_id", id);
+                ShareUtils.putString(this, "phone", phone);
 
                 handler.sendEmptyMessage(StaticClass.LOGIN_SUCCESS);
             } else if (result.equals("0")) {

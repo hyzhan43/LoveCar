@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +21,7 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.utils.L;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * 项目名：  LoveCar
@@ -81,6 +84,14 @@ public class NewsAdapter extends BaseAdapter{
             if (conversation != null){
                 Message message = conversation.getLatestMessage();
                 if (message != null){
+
+                    File iconFile = conversation.getAvatarFile();
+                    Picasso.with(context)
+                            .load(iconFile)
+                            .error(R.mipmap.ic_launcher)
+                            .into(viewHolder.iv_icon);
+
+
                     // 设置 会话列表用户名字
                     viewHolder.tv_username.setText(conversation.getTitle());
 

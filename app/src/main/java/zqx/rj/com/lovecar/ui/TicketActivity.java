@@ -22,11 +22,15 @@ import okhttp3.RequestBody;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.NewRounteData;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.NewRounteRsp;
+import zqx.rj.com.lovecar.entity.response.OneTicketRsp;
 import zqx.rj.com.lovecar.utils.L;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
+import zqx.rj.com.lovecar.utils.UtilTools;
 import zqx.rj.com.lovecar.view.CustomDialog;
 
 /**
@@ -38,7 +42,7 @@ import zqx.rj.com.lovecar.view.CustomDialog;
  * 描述：    车票详情页面
  */
 
-public class TicketActivity extends BaseActivity implements View.OnClickListener{
+public class TicketActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView title;
     private Button back;
@@ -74,16 +78,16 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout ll_chat_like;
 
 
-    private class MyHandler extends Handler{
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.GET_TICKETS_SUCCESS:
                     RefreshDatas();
                     dialog.dismiss();
                     break;
                 case StaticClass.GET_TICKETS_FAIL:
-                    T.show(TicketActivity.this,"数据获取失败");
+                    T.show(TicketActivity.this, "数据获取失败");
                     dialog.dismiss();
                     break;
                 case StaticClass.NETWORK_FAIL:
@@ -101,16 +105,16 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
         main_surplus.setText(oneTicket.getSurplus());
 
         String[] startPlace = oneTicket.getFrom_place().split("-");
-        if (startPlace.length == 2){
+        if (startPlace.length == 2) {
             main_start_place.setText(startPlace[1]);
-        }else {
+        } else {
             main_start_place.setText(oneTicket.getFrom_place());
         }
 
         String[] endPlace = oneTicket.getTo_place().split("-");
-        if (endPlace.length == 2){
+        if (endPlace.length == 2) {
             main_end_place.setText(endPlace[1]);
-        }else {
+        } else {
             main_end_place.setText(oneTicket.getTo_place());
         }
 
@@ -138,24 +142,35 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
         Intent intent = getIntent();
         id = intent.getStringExtra("ticketId");
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 RequestBody body = new FormBody.Builder()
                         .add("publish_id", id)
                         .build();
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.GET_ONE_TICKET, body);
-                if (response.getCode() == OkhttpResponse.STATE_OK){
-                    parseJSONWithGSON(response.getData());
-                }else {
+                OkhttpResponse response = okHttp.post(TicketActivity.this,
+                        API.GET_ONE_TICKET, body);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
+                    parseJsonWithGson(response.getData());
+                } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
             }
         }.start();
     }
 
-    private void parseJSONWithGSON(String datas) {
+    private void parseJsonWithGson(String data) {
+        OneTicketRsp oneTicketRsp = UtilTools.jsonToBean(data, OneTicketRsp.class);
+        if (oneTicketRsp.getCode() == 1) {
+            oneTicket = oneTicketRsp.getData();
+            handler.sendEmptyMessageDelayed(StaticClass.GET_TICKETS_SUCCESS, 2000);
+        } else {
+            handler.sendEmptyMessageDelayed(StaticClass.GET_TICKETS_FAIL, 1000);
+        }
+    }
+
+    private void parseJsonWithGson2(String datas) {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(datas);
@@ -164,8 +179,8 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
                 String result = jsonObject.getString("data");
                 Gson gson = new Gson();
                 oneTicket = gson.fromJson(result, NewRounteData.class);
-                handler.sendEmptyMessageDelayed(StaticClass.GET_TICKETS_SUCCESS,2000);
-            }else if (code.equals("0")){
+                handler.sendEmptyMessageDelayed(StaticClass.GET_TICKETS_SUCCESS, 2000);
+            } else if (code.equals("0")) {
                 L.e("车票详情数据加载失败");
                 handler.sendEmptyMessageDelayed(StaticClass.GET_TICKETS_FAIL, 1000);
             }
@@ -180,8 +195,9 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
         @Override
         public void onAddSuccess(int i) {
             count = i;
-            tv_all_money.setText("￥" + i*Integer.parseInt(price));
+            tv_all_money.setText("￥" + i * Integer.parseInt(price));
         }
+
         //添加成功事件
         @Override
         public void onAddFailed(int i, FailType failType) {
@@ -190,7 +206,7 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
 
         @Override
         public void onDelSuccess(int i) {
-            tv_all_money.setText("￥" + i*Integer.parseInt(price));
+            tv_all_money.setText("￥" + i * Integer.parseInt(price));
         }
 
         @Override
@@ -244,15 +260,15 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;
             case R.id.btn_buy:
-                if (count != 0){
+                if (count != 0) {
                     BuyTickets();
                     T.show(this, "购票成功");
-                }else {
+                } else {
                     T.show(this, "请选择购票数");
                 }
                 break;
@@ -262,7 +278,7 @@ public class TicketActivity extends BaseActivity implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.ll_chat_like:
-                T.show(this,"喜欢");
+                T.show(this, "喜欢");
                 break;
         }
     }

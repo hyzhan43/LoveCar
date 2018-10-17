@@ -11,17 +11,17 @@ package zqx.rj.com.lovecar.entity;
 
 public class OrderDetailData {
 
-    public String create_time;
-    public String departure_time;
-    public String from_place;
-    public String to_place;
-    public String price;
-    public String name;
-    public String identity_card;
-    public String iphone;
-    public String order_number;
-    public String poll;
-    public String total_price;
+    private String create_time;
+    private String departure_time;
+    private String from_place;
+    private String to_place;
+    private String price;
+    private String name;
+    private String identity_card;
+    private String iphone;
+    private String order_number;
+    private String poll;
+    private String total_price;
 
     public String getCreate_time() {
         return create_time;

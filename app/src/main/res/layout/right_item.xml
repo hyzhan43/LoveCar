@@ -18,6 +18,7 @@
         android:padding="20dp"/>
 
     <ImageView
+        android:id="@+id/iv_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="10dp"

@@ -119,4 +119,6 @@
     <string name="seat">座</string>
     <string name="seat_number">数量</string>
     <string name="ticket_moments">票圈</string>
+    <string name="publish_suc">发布成功</string>
+    <string name="look">查看</string>
 </resources>

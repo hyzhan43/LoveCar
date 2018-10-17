@@ -3,12 +3,11 @@ package zqx.rj.com.lovecar.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,15 +27,13 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.internal.Util;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.IconRsp;
 import zqx.rj.com.lovecar.utils.API;
-import zqx.rj.com.lovecar.utils.L;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ShareUtils;
 import zqx.rj.com.lovecar.utils.StaticClass;
@@ -156,9 +151,9 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
         tv_phone.setText(userInfo.getUserName());
 
         UserInfo.Gender gender = userInfo.getGender();
-        if (gender == UserInfo.Gender.female){
+        if (gender == UserInfo.Gender.female) {
             tv_sex.setText(getResources().getString(R.string.women));
-        }else {
+        } else {
             tv_sex.setText(getResources().getString(R.string.man));
         }
 
@@ -263,14 +258,14 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
         sex_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rb_man.isChecked()){
+                if (rb_man.isChecked()) {
                     userInfo.setGender(UserInfo.Gender.male);
                     tv_sex.setText(getResources().getString(R.string.man));
-                }else if (rb_women.isChecked()){
+                } else if (rb_women.isChecked()) {
                     userInfo.setGender(UserInfo.Gender.female);
                     tv_sex.setText(getResources().getString(R.string.women));
                 }
-                if (rb_man.isChecked() || rb_women.isChecked()){
+                if (rb_man.isChecked() || rb_women.isChecked()) {
                     updateUserInfo(gender);
                     sexDialog.dismiss();
                 }
@@ -374,10 +369,10 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    public void updateIcon(final File file){
+    public void updateIcon(final File file) {
 
         final String phone = UtilTools.getPhone(ImformationActivity.this);
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
 
@@ -389,29 +384,38 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
                         .build();
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.UPDATE_ICON, multipartBody);
-                if (response.getCode() == OkhttpResponse.STATE_OK){
-                    L.d("data = " + response.getData());
-                    parseJson(response.getData());
-                }else {
-                    L.d("data = " + response.getData() );
+                OkhttpResponse response = okHttp.post(ImformationActivity.this,
+                        API.UPDATE_ICON, multipartBody);
 
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
+                    parseJson(response.getData());
+                } else {
+                    // TODO 错误
                 }
             }
         }.start();
     }
 
+    private void parseJson(String data) {
+        IconRsp iconRsp = UtilTools.jsonToBean(data, IconRsp.class);
 
-    private void parseJson(String resposne) {
+        if (iconRsp.getCode() == 1){
+            ShareUtils.putString(this, "icon_url", iconRsp.getData().getThumb());
+        }else {
+            Log.d("LST", "错误->" + iconRsp.getMessage());
+        }
+    }
+
+    private void parseJson2(String resposne) {
         try {
             JSONObject jsonObject = new JSONObject(resposne);
             String code = jsonObject.getString("code");
-            if (code.equals("1")){
+            if (code.equals("1")) {
                 jsonObject = jsonObject.getJSONObject("data");
                 String url = jsonObject.getString("imgUrl");
-                ShareUtils.putString(this,"icon_url", url);
+                ShareUtils.putString(this, "icon_url", url);
 
-            }else if (code.equals("0")){
+            } else if (code.equals("0")) {
 
             }
 
@@ -430,7 +434,7 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
     // 设置 回传 头像
     private void backIconToMy() {
         Intent intent = new Intent();
-        if (iconBitmap != null){
+        if (iconBitmap != null) {
             intent.putExtra("update", true);
             setResult(StaticClass.RESULT_ICON, intent);
         }

@@ -15,6 +15,8 @@ public class ChatListData {
     // 文本
     private String text;
 
+    private String imageUrl;
+
     public int getType() {
         return type;
     }
@@ -29,5 +31,13 @@ public class ChatListData {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

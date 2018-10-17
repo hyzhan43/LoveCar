@@ -28,11 +28,14 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.SearchResultAdapter;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
 import zqx.rj.com.lovecar.entity.SearchResultData;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.SearchTicketsRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.L;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
+import zqx.rj.com.lovecar.utils.UtilTools;
 import zqx.rj.com.lovecar.view.CustomDialog;
 
 /**
@@ -46,7 +49,7 @@ import zqx.rj.com.lovecar.view.CustomDialog;
 
 public class SearchResultActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-//    private static final int NETWORK_FAIL = 1;
+    //    private static final int NETWORK_FAIL = 1;
 //    private static final int SEARCH_SUCCESS = 2;
 //    private static final int SEARCH_FAIL = 3;
     private Button btn_back;
@@ -63,10 +66,10 @@ public class SearchResultActivity extends BaseActivity implements View.OnClickLi
 
     private CustomDialog dialog;
 
-    private class MyHandler extends Handler{
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.SEARCH_SUCCESS:
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
@@ -96,13 +99,13 @@ public class SearchResultActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initDatas() {
-        if (getIntent() != null){
+        if (getIntent() != null) {
             Intent intent = getIntent();
             start = intent.getStringExtra("startPlace");
             end = intent.getStringExtra("endPlace");
             time = intent.getStringExtra("time");
         }
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 RequestBody body = new FormBody.Builder()
@@ -111,31 +114,42 @@ public class SearchResultActivity extends BaseActivity implements View.OnClickLi
                         .add("to_place", end)
                         .build();
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.SEARCH_TICKET, body);
-                if (response.getCode() == OkhttpResponse.STATE_OK){
+                OkhttpResponse response = okHttp.post(SearchResultActivity.this,
+                        API.SEARCH_TICKET, body);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
                     pasingJson(response.getData());
-                }else {
+                } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
             }
         }.start();
     }
 
+    private void pasingJson(String data) {
+        SearchTicketsRsp searchTicketsRsp = UtilTools.jsonToBean(data, SearchTicketsRsp.class);
+        if (searchTicketsRsp.getCode() == 1) {
+            resultList.addAll(searchTicketsRsp.getData());
+            handler.sendEmptyMessageDelayed(StaticClass.SEARCH_SUCCESS, 1000);
+        } else {
+            handler.sendEmptyMessageDelayed(StaticClass.SEARCH_FAIL, 1000);
+        }
+    }
 
-    private void pasingJson(String datas) {
+    private void pasingJson2(String datas) {
         try {
             JSONObject jsonObject = new JSONObject(datas);
             String result = jsonObject.getString("code");
-            if (result.equals("1")){
+            if (result.equals("1")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
 
                 Gson gson = new Gson();
                 List<SearchResultData> dataList = gson.fromJson(jsonArray.toString(),
-                        new TypeToken<List<SearchResultData>>(){}.getType());
+                        new TypeToken<List<SearchResultData>>() {
+                        }.getType());
                 resultList.addAll(dataList);
-                handler.sendEmptyMessageDelayed(StaticClass.SEARCH_SUCCESS,1000);
-            } else if (result.equals("0")){
-                handler.sendEmptyMessageDelayed(StaticClass.SEARCH_FAIL,1000);
+                handler.sendEmptyMessageDelayed(StaticClass.SEARCH_SUCCESS, 1000);
+            } else if (result.equals("0")) {
+                handler.sendEmptyMessageDelayed(StaticClass.SEARCH_FAIL, 1000);
             }
 
         } catch (JSONException e) {
@@ -171,7 +185,7 @@ public class SearchResultActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;

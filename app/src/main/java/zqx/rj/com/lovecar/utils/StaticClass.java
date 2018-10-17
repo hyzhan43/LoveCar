@@ -91,4 +91,5 @@ public class StaticClass {
     public static final int DELETE_CODE = 25;
 
 
+    public static final int GET_USER_INFO = 26;
 }

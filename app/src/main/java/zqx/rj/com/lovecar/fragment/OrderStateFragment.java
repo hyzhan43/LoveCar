@@ -31,6 +31,8 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.OrderDetailAdapter;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
 import zqx.rj.com.lovecar.entity.OrderData;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.OrderRsp;
 import zqx.rj.com.lovecar.ui.OrderDetailActivity;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
@@ -62,7 +64,7 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case StaticClass.GET_ORDER_SUCCESS:
-                    if (dialog.isShowing()){
+                    if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
                     adapter.notifyDataSetChanged();
@@ -72,7 +74,7 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
                     }
                     break;
                 case StaticClass.GET_ORDER_EMPTY:
-                    if (dialog.isShowing()){
+                    if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
                     if (swipelayout.isRefreshing()) {
@@ -82,7 +84,7 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
                             .getString(R.string.not_tickets));
                     break;
                 case StaticClass.NETWORK_FAIL:
-                    if (dialog.isShowing()){
+                    if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
                     T.show(getActivity(), getActivity().getResources()
@@ -134,7 +136,7 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isInit){
+        if (isVisibleToUser && isInit) {
             initDatas();
             isInit = false;
         }
@@ -152,7 +154,7 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
                         .add("order_status", state)
                         .build();
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.GET_ORDER, requestbody);
+                OkhttpResponse response = okHttp.post(getContext(), API.GET_ORDER, requestbody);
                 // 若是 正常响应 200
                 if (response.getCode() == OkhttpResponse.STATE_OK) {
                     // 解析 Json 数据
@@ -165,9 +167,22 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
         }.start();
     }
 
-
-
     private void parseJson(String responseData) {
+        OrderRsp orderRsp = UtilTools.jsonToBean(responseData, OrderRsp.class);
+
+        if (orderRsp.getCode() == 1) {
+            tickets.addAll(orderRsp.getData());
+            if (tickets.size() > 0) {
+                handler.sendEmptyMessage(StaticClass.GET_ORDER_SUCCESS);
+            }
+        } else {
+            handler.sendEmptyMessage(StaticClass.GET_ORDER_EMPTY);
+        }
+
+
+    }
+
+    private void parseJson2(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
             int code = jsonObject.getInt("code");
@@ -175,7 +190,8 @@ public class OrderStateFragment extends Fragment implements AdapterView.OnItemCl
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
                 Gson gson = new Gson();
                 List<OrderData> orderData = gson.fromJson(jsonArray.toString(),
-                        new TypeToken<List<OrderData>>() {}.getType());
+                        new TypeToken<List<OrderData>>() {
+                        }.getType());
 
                 tickets.addAll(orderData);
                 if (tickets.size() > 0) {

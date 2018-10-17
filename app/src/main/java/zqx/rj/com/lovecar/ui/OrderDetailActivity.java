@@ -19,6 +19,8 @@ import okhttp3.RequestBody;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
 import zqx.rj.com.lovecar.entity.OrderDetailData;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.OrderDetailRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.StaticClass;
@@ -37,7 +39,7 @@ import zqx.rj.com.lovecar.view.CustomDialog;
 
 public class OrderDetailActivity extends BaseActivity implements View.OnClickListener {
 
-//    private static final int NETWORK_FAIL = 2;
+    //    private static final int NETWORK_FAIL = 2;
 //    private static final int ORDER_SUCCESS = 3;
     private TextView title;
     private Button back;
@@ -62,10 +64,11 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
     private CustomDialog dialog;
 
     private MyHandler handler = new MyHandler();
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.ORDER_SUCCESS:
 
                     OrderDetailData orderData = (OrderDetailData) msg.obj;
@@ -103,12 +106,12 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void initData() {
         dialog.show();
-        if (getIntent() != null){
+        if (getIntent() != null) {
             orderNumber = getIntent().getStringExtra("orderNumber");
             orderState = getIntent().getStringExtra("state");
         }
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 RequestBody body = new FormBody.Builder()
@@ -116,10 +119,11 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
                         .build();
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.ORDER_DETAIL, body);
-                if (response.getCode() == OkhttpResponse.STATE_OK){
+                OkhttpResponse response = okHttp.post(OrderDetailActivity.this,
+                        API.ORDER_DETAIL, body);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
-                }else {
+                } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
             }
@@ -127,12 +131,24 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-
     private void parseJson(String responseData) {
+         OrderDetailRsp orderDetailRsp = UtilTools.jsonToBean(responseData, OrderDetailRsp.class);
+
+        if (orderDetailRsp.getCode() == 1){
+            Message message = new Message();
+            message.obj = orderDetailRsp.getData();
+            message.what = StaticClass.ORDER_SUCCESS;
+            handler.sendMessage(message);
+        }else {
+            handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
+        }
+    }
+
+    private void parseJson2(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
             int code = jsonObject.getInt("code");
-            if (code == 1){
+            if (code == 1) {
 
                 jsonObject = jsonObject.getJSONObject("data");
 
@@ -144,7 +160,7 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
                 message.what = StaticClass.ORDER_SUCCESS;
                 handler.sendMessage(message);
 
-            }else if (code == 0){
+            } else if (code == 0) {
                 handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
             }
         } catch (JSONException e) {
@@ -193,7 +209,7 @@ public class OrderDetailActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;

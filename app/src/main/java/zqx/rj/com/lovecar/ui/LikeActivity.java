@@ -25,6 +25,8 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.LikeAdapter;
 import zqx.rj.com.lovecar.entity.LikeData;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.LikeRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ShareUtils;
@@ -98,7 +100,7 @@ public class LikeActivity extends BaseActivity implements View.OnClickListener {
                         .build();
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.GET_LIKE, body);
+                OkhttpResponse response = okHttp.post(LikeActivity.this, API.GET_LIKE, body);
 
                 if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
@@ -110,6 +112,20 @@ public class LikeActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void parseJson(String response) {
+        LikeRsp likeRsp = UtilTools.jsonToBean(response, LikeRsp.class);
+        if (likeRsp.getCode() == 1) {
+            nowList = likeRsp.getData();
+            handler.sendEmptyMessage(StaticClass.GET_LIKE_SUC);
+        } else {
+            Message message = new Message();
+            message.obj = likeRsp.getMessage();
+            message.what = StaticClass.GET_LIKE_FAIL;
+            handler.sendMessage(message);
+        }
+    }
+
+    private void parseJson2(String response) {
+
         try {
             JSONObject jsonObject = new JSONObject(response);
             String result = jsonObject.getString("code");
@@ -117,7 +133,8 @@ public class LikeActivity extends BaseActivity implements View.OnClickListener {
                 JSONArray dataArray = jsonObject.getJSONArray("data");
 
                 nowList = new Gson().fromJson(dataArray.toString(),
-                        new TypeToken<List<LikeData>>() {}.getType());
+                        new TypeToken<List<LikeData>>() {
+                        }.getType());
 
                 handler.sendEmptyMessage(StaticClass.GET_LIKE_SUC);
             } else if (result.equals("0")) {

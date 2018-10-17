@@ -1,8 +1,8 @@
 package zqx.rj.com.lovecar.ui;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -176,8 +176,8 @@ public class SearchTicketsActivity extends BaseActivity implements View.OnClickL
                     }
                     // 存入历史纪录
                     saveDataToDb(start, end, time);
-                    // 添加 进 listview
-                    saveDataToList(start, end, time);
+                    // 添加 进 listView
+                    changeDataToTopList(start, end, time);
                     startActivity(intent3);
                 } else {
                     T.show(this, "请选择上车/下车地点~");
@@ -199,24 +199,54 @@ public class SearchTicketsActivity extends BaseActivity implements View.OnClickL
     }
 
     // 添加到 listview 顶部
-    private void saveDataToList(String start, String end, String time) {
+    private void changeDataToTopList(String start, String end, String time) {
+
         SearchHistoryData data = new SearchHistoryData();
         data.setStartPlace(start);
         data.setEndPlace(end);
         data.setTime(time);
         data.setId(tempList.size() + 1);
-        dataList.add(0, data);
+
+        // 如果 list中存在 则置顶 否则就 add 到顶部
+        if (dataList.contains(data)) {
+
+            for (SearchHistoryData searchData : dataList) {
+                if (searchData.getStartPlace().equals(start)
+                        && searchData.getEndPlace().equals(end)) {
+
+                    dataList.remove(searchData);
+                    dataList.add(0, searchData);
+                }
+            }
+
+        } else {
+            dataList.add(0, data);
+        }
+
         adapter.notifyDataSetChanged();
     }
 
     // 存入数据库
     private void saveDataToDb(String start, String end, String time) {
 
-        SearchHistoryData data = new SearchHistoryData();
-        data.setStartPlace(start);
-        data.setEndPlace(end);
-        data.setTime(time);
-        data.save();
+        // 查询数据 是否存在
+        List<SearchHistoryData> dataList = DataSupport.where("startPlace = ?", start)
+                .where("endPlace = ?", end)
+                .find(SearchHistoryData.class);
+
+        // 如果不存在则 add
+        if (dataList.size() == 0) {
+            SearchHistoryData data = new SearchHistoryData();
+            data.setStartPlace(start);
+            data.setEndPlace(end);
+            data.setTime(time);
+            data.save();
+        } else {
+            // 否则 更新时间
+            ContentValues values = new ContentValues();
+            values.put("time", time);
+            DataSupport.update(SearchHistoryData.class, values, dataList.get(0).getId());
+        }
     }
 
     // 历史数据 点击事件

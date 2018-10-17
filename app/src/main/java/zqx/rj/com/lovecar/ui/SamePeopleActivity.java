@@ -22,10 +22,13 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.SamePeopleAdapter;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
 import zqx.rj.com.lovecar.entity.SamePeopleData;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.SamePeopleRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * 项目名：  LoveCar
@@ -48,10 +51,11 @@ public class SamePeopleActivity extends BaseActivity implements View.OnClickList
 
 
     private MyHandler handler = new MyHandler();
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.NETWORK_FAIL:
                     T.show(SamePeopleActivity.this, getString(R.string.network_fail));
                     break;
@@ -78,15 +82,16 @@ public class SamePeopleActivity extends BaseActivity implements View.OnClickList
     private void initData() {
         samePeopleData = new ArrayList<>();
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.get(API.GET_SAME_PEOPLE);
-                if (response.getCode() == OkhttpResponse.STATE_OK){
+                OkhttpResponse response = okHttp.get(SamePeopleActivity.this,
+                        API.GET_SAME_PEOPLE);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
-                }else {
+                } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
 
@@ -95,17 +100,28 @@ public class SamePeopleActivity extends BaseActivity implements View.OnClickList
     }
 
     private void parseJson(String response) {
+        SamePeopleRsp samePeopleRsp = UtilTools.jsonToBean(response, SamePeopleRsp.class);
+        if (samePeopleRsp.getCode() == 1) {
+            newdataList = samePeopleRsp.getData();
+            handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_SUC);
+        } else {
+            handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_FAIL);
+        }
+    }
+
+    private void parseJson2(String response) {
 
         try {
             JSONObject jsonObject = new JSONObject(response);
             int code = jsonObject.getInt("code");
-            if (code == 1){
+            if (code == 1) {
 
                 JSONArray dataArray = jsonObject.getJSONArray("data");
                 newdataList = new Gson().fromJson(dataArray.toString(),
-                        new TypeToken<List<SamePeopleData>>(){}.getType());
+                        new TypeToken<List<SamePeopleData>>() {
+                        }.getType());
                 handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_SUC);
-            }else if (code == 0){
+            } else if (code == 0) {
                 handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_FAIL);
             }
 
@@ -128,7 +144,7 @@ public class SamePeopleActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;

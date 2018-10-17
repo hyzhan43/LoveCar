@@ -31,12 +31,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.CodeRsp;
+import zqx.rj.com.lovecar.entity.response.EmptyRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.L;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * 项目名：  LoveCar
@@ -82,10 +86,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 //    private static final int NETWORK_FAIL = 1004;
 
     private MyHandler handler;
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case StaticClass.START_TIME:
                     btn_send_code.setText(time + " s");
                     break;
@@ -140,7 +145,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;
@@ -149,10 +154,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 checkPhone();
                 break;
             case R.id.btn_send_code:
-                // 倒计时
-                timeOver();
-                // 发送验证码
-                sendCode();
+
+                if (TextUtils.isEmpty(et_phone.getText().toString())) {
+                    T.show(this, getString(R.string.input_phone));
+                }else {
+                    // 倒计时
+                    timeOver();
+                    // 发送验证码
+                    sendCode();
+                }
                 break;
         }
     }
@@ -163,7 +173,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (time > 0){
+                while (time > 0) {
                     --time;
                     handler.sendEmptyMessage(StaticClass.START_TIME);
                     try {
@@ -185,24 +195,22 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         code = et_code.getText().toString();
 
         if (TextUtils.isEmpty(phone) & TextUtils.isEmpty(password) & TextUtils.isEmpty(again)
-                & TextUtils.isEmpty(code)){
+                & TextUtils.isEmpty(code)) {
             T.show(this, "请把信息补全");
-        }else if (!cb_agree.isChecked()){
-            T.show(this,"请同意《爱宝车服务协议》");
-        }else if (!password.equals(again)){
+        } else if (!cb_agree.isChecked()) {
+            T.show(this, "请同意《爱宝车服务协议》");
+        } else if (!password.equals(again)) {
             T.show(this, "两次密码输入有误，请重新输入");
-        }
-        else if (!code.equals(toCode)){
+        } else if (!code.equals(toCode)) {
             T.show(this, "验证码输入有误");
-        }
-        else {
+        } else {
             // 注册 爱宝车账号
             registerAccount();
         }
     }
 
     private void registerAccount() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 RequestBody body = new FormBody.Builder()
@@ -213,25 +221,38 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         .build();
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.USER_REGISTER, body);
+                OkhttpResponse response = okHttp.post(RegisterActivity.this,
+                        API.USER_REGISTER, body);
 
-                if (response.getCode() == OkhttpResponse.STATE_OK){
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseRegisterJson(response.getData());
-                }else {
+                } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
             }
         }.start();
     }
 
-    // 解析 注册   {"code":1,"message":"注册成功","data":[]}
     private void parseRegisterJson(String data) {
+        EmptyRsp emptyRsp = UtilTools.jsonToBean(data, EmptyRsp.class);
+        if (emptyRsp.getCode() == 1) {
+            handler.sendEmptyMessage(StaticClass.REGISTER_SUCCESS);
+        } else {
+            Message message = new Message();
+            message.what = StaticClass.REGISTER_ERROR;
+            message.obj = emptyRsp.getMessage();
+            handler.sendMessage(message);
+        }
+    }
+
+    // 解析 注册   {"code":1,"message":"注册成功","data":[]}
+    private void parseRegisterJson2(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
             String code = jsonObject.getString("code");
-            if (code.equals("1")){
+            if (code.equals("1")) {
                 handler.sendEmptyMessage(StaticClass.REGISTER_SUCCESS);
-            }else if (code.equals("0")){
+            } else if (code.equals("0")) {
                 Message message = new Message();
                 message.what = StaticClass.REGISTER_ERROR;
                 message.obj = jsonObject.getString("message");
@@ -245,19 +266,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     public void sendCode() {
         phone = et_phone.getText().toString();
-        if (!TextUtils.isEmpty(phone)){
+        if (!TextUtils.isEmpty(phone)) {
 
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     RequestBody body = new FormBody.Builder()
                             .add("phone", phone)
                             .build();
                     OkHttp okHttp = new OkHttp();
-                    OkhttpResponse response = okHttp.post(API.SEND_CODE, body);
-                    if (response.getCode() == OkhttpResponse.STATE_OK){
+                    OkhttpResponse response = okHttp.post(RegisterActivity.this,
+                            API.SEND_CODE, body);
+                    if (response.getCode() == OkhttpResponse.STATE_OK) {
                         parseCodeJson(response.getData());
-                    }else {
+                    } else {
                         handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                     }
                 }
@@ -266,12 +288,21 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void parseCodeJson(String data) {
+        CodeRsp codeRsp = UtilTools.jsonToBean(data, CodeRsp.class);
+        if (codeRsp.getCode() == 1) {
+            toCode = codeRsp.getData().getVerification();
+        } else {
+            handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
+        }
+    }
+
+    private void parseCodeJson2(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
             String code = jsonObject.getString("code");
-            if (code.equals("1")){
+            if (code.equals("1")) {
                 toCode = jsonObject.getJSONObject("data").getString("Verification");
-            }else if (code.equals("0")){
+            } else if (code.equals("0")) {
                 handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
             }
         } catch (JSONException e) {

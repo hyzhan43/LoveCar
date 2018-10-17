@@ -169,6 +169,8 @@ public class MainActivity extends BaseActivity {
                 getItemColor(R.color.menuPressRed));
         actionMenu.addView(R.drawable.write, getItemColor(R.color.menuNormalBlue),
                 getItemColor(R.color.menuPressBlue));
+        actionMenu.addView(R.drawable.write, getItemColor(R.color.menuNormalBlue),
+                getItemColor(R.color.menuPressBlue));
 
         // 悬浮按钮设置监听
         actionMenu.setItemClickListener(new OnActionItemClickListener() {
@@ -177,7 +179,6 @@ public class MainActivity extends BaseActivity {
 
                 Intent intent = null;
                 switch (position) {
-
                     case 0:
 
                         break;
@@ -190,7 +191,6 @@ public class MainActivity extends BaseActivity {
                     case 3:
 //                        T.show(MainActivity.this, "抱歉你没有权限发布包车信息~");
                         intent = new Intent(MainActivity.this, PublishActivity.class);
-
                         break;
                 }
 

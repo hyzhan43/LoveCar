@@ -11,7 +11,7 @@ import org.litepal.crud.DataSupport;
  * 描述：    搜索历史记录
  */
 
-public class SearchHistoryData extends DataSupport{
+public class SearchHistoryData extends DataSupport {
 
     private int id;
     private String startPlace;
@@ -48,5 +48,18 @@ public class SearchHistoryData extends DataSupport{
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof SearchHistoryData) {
+            SearchHistoryData other = (SearchHistoryData) obj;
+
+            return this.startPlace.equals(other.startPlace)
+                    && this.endPlace.equals(other.endPlace);
+        }
+
+        return super.equals(obj);
     }
 }

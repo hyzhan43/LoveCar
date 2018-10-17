@@ -15,6 +15,7 @@ public class OkhttpResponse {
     public static final int STATE_UNKNOWN_ERROR = 400;
     // 正常返回
     public static final int STATE_OK = 200;
+
     // 状态码
     private int code;
 

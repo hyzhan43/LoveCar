@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ import okhttp3.RequestBody;
 import zqx.rj.com.lovecar.Observer.ObserverManager;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.EmptyRsp;
 import zqx.rj.com.lovecar.utils.API;
 import zqx.rj.com.lovecar.utils.Get;
 import zqx.rj.com.lovecar.utils.OkHttp;
@@ -263,10 +265,10 @@ public class PublishActivity extends BaseActivity implements View.OnClickListene
                         .add("price", Get.text(mPrice))
                         .add("surplus", Get.text(mSeatCount))
                         .add("departure_time", Get.text(mTime))
-                        .add("user_id", UtilTools.getUserId(PublishActivity.this))
                         .build();
 
-                OkhttpResponse response = okHttp.post(API.UPDATE_NEW_TICKETS, body);
+                OkhttpResponse response = okHttp.post(PublishActivity.this,
+                        API.UPDATE_NEW_TICKETS, body);
                 if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
                 } else {
@@ -276,7 +278,20 @@ public class PublishActivity extends BaseActivity implements View.OnClickListene
         }.start();
     }
 
-    private void parseJson(String datas) {
+    private void parseJson(String data) {
+        EmptyRsp emptyRsp = UtilTools.jsonToBean(data, EmptyRsp.class);
+        Log.d("LST", emptyRsp.getCode() + "<----code");
+        if (emptyRsp.getCode() == 1) {
+            handler.sendEmptyMessage(UPDATE_SUC);
+        } else {
+            Message message = new Message();
+            message.what = UPDATE_FAIL;
+            message.obj = emptyRsp.getMessage();
+            handler.sendMessage(message);
+        }
+    }
+
+    private void parseJson2(String datas) {
 
         JSONObject jsonObject;
         try {
@@ -300,6 +315,9 @@ public class PublishActivity extends BaseActivity implements View.OnClickListene
 
     private void updateNewsTickets() {
         ObserverManager.Holder.instance.notifyListener();
+        Intent intent = new Intent(this, PublishSucActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean checkInput() {

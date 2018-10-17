@@ -18,6 +18,8 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.NewsAdapter;
 import zqx.rj.com.lovecar.ui.ChatMsgActivity;
 import zqx.rj.com.lovecar.utils.ScreenTools;
+import zqx.rj.com.lovecar.utils.ShareUtils;
 import zqx.rj.com.lovecar.utils.StaticClass;
 
 import static cn.jpush.im.android.api.jmrtc.JMRTCInternalUse.getApplicationContext;
@@ -152,12 +155,18 @@ public class NewsFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), ChatMsgActivity.class);
         Conversation conversation = conversationList.get(position);
+
+        File iconFile = conversation.getAvatarFile();
+        String path = iconFile.getPath();
+        ShareUtils.putString(getActivity(), "targetIconPath", path);
+
         // 重置单个会话未读消息数
         boolean reset = conversation.resetUnreadCount();
         if (reset){
             adapter.notifyDataSetChanged();
         }
         intent.putExtra("position", position);
+
         startActivity(intent);
     }
 

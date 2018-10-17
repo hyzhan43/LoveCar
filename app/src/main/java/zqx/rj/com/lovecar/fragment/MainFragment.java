@@ -40,6 +40,7 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.NewRounteAdapter;
 import zqx.rj.com.lovecar.entity.NewRounteData;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.NewRounteRsp;
 import zqx.rj.com.lovecar.ui.GuideActivity;
 import zqx.rj.com.lovecar.ui.LikeActivity;
 import zqx.rj.com.lovecar.ui.MomentsActivity;
@@ -52,6 +53,7 @@ import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ScreenTools;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * 项目名：  LoveCar
@@ -204,9 +206,9 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
                         .add("p", String.valueOf(page))
                         .build();
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.NEW_ROUNTE, body);
+                OkhttpResponse response = okHttp.post(getContext(), API.NEW_ROUNTE, body);
                 if (response.getCode() == OkhttpResponse.STATE_OK) {
-                    parseJSONWithGSON(response.getData());
+                    parseJsonWithGson(response.getData());
                 } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
                 }
@@ -214,12 +216,22 @@ public class MainFragment extends Fragment implements AbsListView.OnScrollListen
         }.start();
     }
 
-    // GSON 解析
-    private void parseJSONWithGSON(String datas) {
+    private void parseJsonWithGson(String data) {
+        NewRounteRsp newRounteRsp = UtilTools.jsonToBean(data, NewRounteRsp.class);
+
+        if (newRounteRsp.getCode() == 1) {
+            tempList.addAll(newRounteRsp.getData());
+            handler.sendEmptyMessageDelayed(StaticClass.LOAD_FINISH, 500);
+        } else {
+            handler.sendEmptyMessageDelayed(StaticClass.NETWORK_FAIL, 1500);
+        }
+    }
+
+    private void parseJsonWithGson2(String data) {
 
         JSONObject jsonObject;
         try {
-            jsonObject = new JSONObject(datas);
+            jsonObject = new JSONObject(data);
             String code = jsonObject.getString("code");
             if (code.equals("1")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("data");

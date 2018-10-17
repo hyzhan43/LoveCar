@@ -2,27 +2,27 @@ package zqx.rj.com.lovecar.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import zqx.rj.com.lovecar.R;
+import zqx.rj.com.lovecar.entity.NewRounteData;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.utils.gson.ParameterizedTypeBuilder;
 
 /**
  * 项目名：  LoveCar
@@ -36,7 +36,7 @@ import zqx.rj.com.lovecar.R;
 public class UtilTools {
 
     // 设置字体
-    public static void setFont(Context mContext, TextView textView){
+    public static void setFont(Context mContext, TextView textView) {
         // 设置字体
         Typeface fontType = Typeface.createFromAsset(mContext.getAssets(), "font/login_title.ttf");
         textView.setTypeface(fontType);
@@ -45,9 +45,9 @@ public class UtilTools {
     public static void updateIcon(Context context, ImageView account_icon) {
         String url = ShareUtils.getString(context, "icon_url", "");
         Log.d("LST", url + "---");
-        if (TextUtils.isEmpty(url)){
+        if (TextUtils.isEmpty(url)) {
             account_icon.setImageResource(R.mipmap.ic_launcher);
-        }else {
+        } else {
             //Picasso 加载图片简单用法
             Picasso.with(context)
                     .load(url)
@@ -59,10 +59,10 @@ public class UtilTools {
     //  Bitmap -> File
     public static File saveFile(Bitmap bm, String path, String fileName) throws IOException {
         File dirFile = new File(path);
-        if(!dirFile.exists()){
+        if (!dirFile.exists()) {
             dirFile.mkdir();
         }
-        File myCaptureFile = new File(path , fileName);
+        File myCaptureFile = new File(path, fileName);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
         bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
         bos.flush();
@@ -70,16 +70,16 @@ public class UtilTools {
         return myCaptureFile;
     }
 
-    public static String getUserId(Context context){
+    public static String getUserId(Context context) {
         return ShareUtils.getString(context, "user_id", "0");
     }
 
-    public static String getPhone(Context context){
+    public static String getPhone(Context context) {
         return ShareUtils.getString(context, "phone", "0");
     }
 
-    public static String getState(String state){
-        switch (Integer.parseInt(state)){
+    public static String getState(String state) {
+        switch (Integer.parseInt(state)) {
             case 1:
                 return "未付款";
             case 2:
@@ -93,4 +93,32 @@ public class UtilTools {
                 return "未知";
         }
     }
+
+    // json (str) ->  bean
+//    public static <T> BaseResponse<T> jsonToBean(String json, Class<T> clazz) {
+//
+//        // BaseResponse<clazz>
+//        Type type = new ParameterizedTypeBuilder(BaseResponse.class, new Class[]{clazz});
+//        return new Gson().fromJson(json, type);
+//    }
+
+    // json (str) ->  List<bean>
+//    public static <T> BaseResponse<List<T>> jsonToListBean(String json, Class<T> clazz) {
+//
+//        // 生成List<T> 中的 List<T>
+//        Type listType = new ParameterizedTypeBuilder(List.class, new Class[]{clazz});
+//
+//        // 根据List<T>生成完整的BaseResponse<List<T>>
+//        Type type = new ParameterizedTypeBuilder(BaseResponse.class, new Type[]{listType});
+//
+//        return new Gson().fromJson(json, type);
+//    }
+
+    public static <T> T jsonToBean(String json, Class<T> clazz) {
+        return new Gson().fromJson(json, clazz);
+    }
+
+//    public static <T> T jsonToListBean(String json) {
+//        return new Gson().fromJson(json, new TypeToken<T>() {}.getType());
+//    }
 }

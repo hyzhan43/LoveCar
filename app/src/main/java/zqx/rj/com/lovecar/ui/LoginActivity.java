@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -13,8 +14,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.jpush.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
+import java.lang.reflect.Type;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
@@ -23,6 +30,8 @@ import okhttp3.RequestBody;
 import zqx.rj.com.lovecar.MainActivity;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.OkhttpResponse;
+import zqx.rj.com.lovecar.entity.response.BaseResponse;
+import zqx.rj.com.lovecar.entity.response.LoginRsp;
 import zqx.rj.com.lovecar.utils.L;
 import zqx.rj.com.lovecar.utils.OkHttp;
 import zqx.rj.com.lovecar.utils.ShareUtils;
@@ -57,10 +66,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     // 记住密码
     private CheckBox remenber_pass;
 
-    private class MyHandler extends Handler{
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
 
                 case StaticClass.LOGIN_SUCCESS:
                     dialog.dismiss();
@@ -72,9 +81,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     break;
                 case StaticClass.LOGIN_FAIL:
                     dialog.dismiss();
-                    if (msg.obj != null){
+                    if (msg.obj != null) {
                         T.show(LoginActivity.this, msg.obj.toString());
-                    }else {
+                    } else {
                         T.show(LoginActivity.this, getString(R.string.network_fail));
                     }
                     break;
@@ -84,8 +93,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     startActivity(intent);
                     finish();
                     break;
+
+                case StaticClass.GET_USER_INFO:
+                    getUserInfo();
+                    break;
             }
         }
+    }
+
+    private void getUserInfo() {
+
     }
 
     @Override
@@ -129,7 +146,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // 设置选中状态
         boolean isCheck = ShareUtils.getBoolean(this, "remenber_pass", false);
         remenber_pass.setChecked(isCheck);
-        if (isCheck){
+        if (isCheck) {
             // 设置密码
             et_account.setText(ShareUtils.getString(this, "account", ""));
             et_password.setText(ShareUtils.getString(this, "password", ""));
@@ -138,7 +155,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_login:
                 CheckPhoneAndPassword();
                 break;
@@ -163,7 +180,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         JMessageClient.login(account, password, new BasicCallback() {
             @Override
             public void gotResult(int code, String result) {
-                if (code == 0){
+                if (code == 0) {
                     // 登录 爱宝车账号
                     loginAccount(account, password);
                 } else {
@@ -178,7 +195,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void loginAccount(final String account, final String password) {
 
-        new Thread(){
+
+        new Thread() {
             @Override
             public void run() {
                 RequestBody body = new FormBody.Builder()
@@ -187,11 +205,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         .build();
 
                 OkHttp okHttp = new OkHttp();
-                OkhttpResponse response = okHttp.post(API.USER_LOGIN, body);
-
-                if (response.getCode() == OkhttpResponse.STATE_OK){
+                OkhttpResponse response = okHttp.post(LoginActivity.this, API.USER_LOGIN, body);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
                     parseJson(response.getData());
-                }else {
+                } else {
                     handler.sendEmptyMessage(StaticClass.LOGIN_FAIL);
                 }
             }
@@ -199,21 +216,43 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void parseJson(String data) {
+
+        LoginRsp loginRsp = new Gson().fromJson(data, LoginRsp.class);
+
+        Log.d("LST", "code->" + loginRsp.getCode());
+        Log.d("LST", "msg->" + loginRsp.getMessage());
+
+        if (loginRsp.getCode() == 1) {
+            ShareUtils.putString(this, "token", loginRsp.getData().getAccessToken());
+            ShareUtils.putString(this, "phone", et_account.getText().toString());
+            handler.sendEmptyMessage(StaticClass.LOGIN_SUCCESS);
+            handler.sendEmptyMessage(StaticClass.GET_USER_INFO);
+        } else {
+            Message message = new Message();
+            message.obj = loginRsp.getMessage();
+            message.what = StaticClass.LOGIN_FAIL;
+            handler.sendMessage(message);
+        }
+    }
+
+    private void parseJson2(String data) {
+
+
         try {
             JSONObject jsonObject = new JSONObject(data);
             String result = jsonObject.getString("code");
-            if (result.equals("1")){
+            if (result.equals("1")) {
                 JSONObject object = jsonObject.getJSONObject("data");
                 String id = object.getString("id");
                 String icon = object.getString("thumb");
                 String phone = object.getString("phone");
 
-                ShareUtils.putString(this,"icon_url", icon);
-                ShareUtils.putString(this,"user_id", id);
-                ShareUtils.putString(this,"phone", phone);
-                handler.sendEmptyMessageDelayed(StaticClass.LOGIN_SUCCESS, 2000);
+                ShareUtils.putString(this, "icon_url", icon);
+                ShareUtils.putString(this, "user_id", id);
+                ShareUtils.putString(this, "phone", phone);
+                handler.sendEmptyMessage(StaticClass.LOGIN_SUCCESS);
 
-            }else if (result.equals("0")){
+            } else if (result.equals("0")) {
                 String errorMessage = jsonObject.getString("message");
                 Message message = new Message();
                 message.obj = errorMessage;
@@ -227,7 +266,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     /**
-     *  当前页面跳转到另一个页面
+     * 当前页面跳转到另一个页面
      */
     private void ThisToActivity(Context packageContext, Class<?> cls) {
         Intent intent = new Intent(packageContext, cls);
@@ -240,14 +279,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onDestroy() {
         super.onDestroy();
 
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+
+
         // 保存状态
-        ShareUtils.putBoolean(this,"remenber_pass", remenber_pass.isChecked());
+        ShareUtils.putBoolean(this, "remenber_pass", remenber_pass.isChecked());
         // 是否记住密码
-        if (remenber_pass.isChecked()){
+        if (remenber_pass.isChecked()) {
             // 记住用户名和密码
             ShareUtils.putString(this, "account", et_account.getText().toString());
             ShareUtils.putString(this, "password", et_password.getText().toString());
-        }else {
+        } else {
             ShareUtils.deleShare(this, "account");
             ShareUtils.deleShare(this, "password");
         }

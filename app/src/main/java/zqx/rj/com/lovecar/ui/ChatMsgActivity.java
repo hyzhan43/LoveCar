@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.adapter.ChatAdapter;
 import zqx.rj.com.lovecar.entity.ChatListData;
 import zqx.rj.com.lovecar.utils.L;
+import zqx.rj.com.lovecar.utils.ShareUtils;
 import zqx.rj.com.lovecar.utils.StaticClass;
 import zqx.rj.com.lovecar.utils.T;
 
@@ -154,8 +156,10 @@ public class ChatMsgActivity extends BaseActivity implements View.OnClickListene
         if (TextUtils.isEmpty(phone)) {
             conversationList = JMessageClient.getConversationList();
             int position = intent.getIntExtra("position", 0);
-            conversation = conversationList.get(position);
-            account = conversation.getTitle();
+            if (conversationList.size() > 0){
+                conversation = conversationList.get(position);
+                account = conversation.getTitle();
+            }
         } else {
             phone = intent.getStringExtra("phone");
             conversation = Conversation.createSingleConversation(phone);
