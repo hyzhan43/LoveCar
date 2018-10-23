@@ -109,27 +109,6 @@ public class SamePeopleActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private void parseJson2(String response) {
-
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            int code = jsonObject.getInt("code");
-            if (code == 1) {
-
-                JSONArray dataArray = jsonObject.getJSONArray("data");
-                newdataList = new Gson().fromJson(dataArray.toString(),
-                        new TypeToken<List<SamePeopleData>>() {
-                        }.getType());
-                handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_SUC);
-            } else if (code == 0) {
-                handler.sendEmptyMessage(StaticClass.SAME_PEOPLE_FAIL);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void initView() {
 
         title = findViewById(R.id.tv_title);

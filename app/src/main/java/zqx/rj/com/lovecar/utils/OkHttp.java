@@ -21,13 +21,6 @@ import zqx.rj.com.lovecar.entity.OkhttpResponse;
 
 public class OkHttp {
 
-//    public OkhttpResponse get(String url) {
-//
-//        final Request request = new Request.Builder()
-//                .url(url)
-//                .build();
-//        return enqueue(request);
-//    }
 
     public OkhttpResponse get(Context context, String url) {
 
@@ -39,16 +32,6 @@ public class OkHttp {
                 .build();
         return enqueue(request);
     }
-
-//    public OkhttpResponse post(String url, RequestBody body) {
-//
-//        final Request request = new Request.Builder()
-//                .url(url)
-//                .post(body)
-//                .build();
-//
-//        return enqueue(request);
-//    }
 
     public OkhttpResponse post(Context context, String url, RequestBody body) {
 
@@ -62,7 +45,6 @@ public class OkHttp {
 
         return enqueue(request);
     }
-
 
 
 

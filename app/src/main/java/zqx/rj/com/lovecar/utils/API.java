@@ -59,4 +59,7 @@ public class API {
 
     // 获取用户信息
     public static final String GET_USER_INFO = BASE_URL + "/User/getUserInfo";
+
+    // 获取指南列表
+    public static final String GET_ARTICLE = BASE_URL + "/Article/getArticleList";
 }

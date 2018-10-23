@@ -2,6 +2,7 @@ package zqx.rj.com.lovecar.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,11 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import zqx.rj.com.lovecar.R;
+import zqx.rj.com.lovecar.entity.Article;
 import zqx.rj.com.lovecar.entity.GuideInfo;
 import zqx.rj.com.lovecar.entity.MomentInfo;
+import zqx.rj.com.lovecar.entity.response.ArticleItem;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * author：  HyZhan
@@ -30,12 +34,17 @@ import zqx.rj.com.lovecar.entity.MomentInfo;
 
 public class GuideAdapter extends BaseAdapter {
 
-    private List<GuideInfo> mList;
+    private List<ArticleItem> mList;
     private Context mContext;
 
-    public GuideAdapter(List<GuideInfo> list, Context context) {
+    public GuideAdapter(List<ArticleItem> list, Context context) {
         mList = list;
         mContext = context;
+    }
+
+    public void setNewData(List<ArticleItem> list) {
+        mList = list;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -61,23 +70,30 @@ public class GuideAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.guide_item, null);
 
+            holder.mImage = convertView.findViewById(R.id.iv_image);
             holder.mTvContent = convertView.findViewById(R.id.tv_content);
+            holder.mTime = convertView.findViewById(R.id.tv_time);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String text = "翻着我们的照片，想念若隐若现，去年的冬天，我们笑得很甜......\\n—— 哎哟，不错哦!\n" +
-                "翻着我们的照片，想念若隐若现，去年的冬天，我们笑得很甜......\\n—— 哎哟，不错哦!\n" +
-                "翻着我们的照片，想念若隐若现，去年的冬天，我们笑得很甜......\\n—— 哎哟，不错哦!";
-        holder.mTvContent.setText(text);
+        if (mList.get(position) != null){
+            ArticleItem article = mList.get(position);
+
+            UtilTools.loadImage(mContext, article.getImage_uri(), holder.mImage);
+            holder.mTvContent.setText(article.getTitle());
+            holder.mTime.setText(article.getDisplay_time());
+        }
 
         return convertView;
     }
 
     class ViewHolder {
+        ImageView mImage;
         TextView mTvContent;
+        TextView mTime;
     }
 
 }

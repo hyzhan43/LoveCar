@@ -94,31 +94,15 @@ public class UtilTools {
         }
     }
 
-    // json (str) ->  bean
-//    public static <T> BaseResponse<T> jsonToBean(String json, Class<T> clazz) {
-//
-//        // BaseResponse<clazz>
-//        Type type = new ParameterizedTypeBuilder(BaseResponse.class, new Class[]{clazz});
-//        return new Gson().fromJson(json, type);
-//    }
-
-    // json (str) ->  List<bean>
-//    public static <T> BaseResponse<List<T>> jsonToListBean(String json, Class<T> clazz) {
-//
-//        // 生成List<T> 中的 List<T>
-//        Type listType = new ParameterizedTypeBuilder(List.class, new Class[]{clazz});
-//
-//        // 根据List<T>生成完整的BaseResponse<List<T>>
-//        Type type = new ParameterizedTypeBuilder(BaseResponse.class, new Type[]{listType});
-//
-//        return new Gson().fromJson(json, type);
-//    }
 
     public static <T> T jsonToBean(String json, Class<T> clazz) {
         return new Gson().fromJson(json, clazz);
     }
 
-//    public static <T> T jsonToListBean(String json) {
-//        return new Gson().fromJson(json, new TypeToken<T>() {}.getType());
-//    }
+    public static void loadImage(Context context, String url, ImageView image) {
+        Picasso.with(context)
+                .load(url)
+                .error(R.drawable.ic_default_image)
+                .into(image);
+    }
 }

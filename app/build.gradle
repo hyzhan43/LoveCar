@@ -71,8 +71,6 @@ dependencies {
     compile 'com.contrarywind:Android-PickerView:4.1.3'
 
     // 高德地图
-
-    //    compile 'com.amap.api:3dmap:latest.integration'
     compile 'com.amap.api:search:latest.integration'
 
     // 长按事件
@@ -93,4 +91,11 @@ dependencies {
 
     // 九宫格图片
     compile 'com.lzy.widget:ninegridview:0.2.0'
+
+    // chart
+    compile 'com.github.blackfizz:eazegraph:1.2.2@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
+
+    // WebView
+    compile 'com.just.agentweb:agentweb:4.0.2' 
 }

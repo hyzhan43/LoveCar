@@ -194,8 +194,9 @@
         <activity android:name=".ui.PublishSucActivity" />
         <activity android:name=".ui.MomentsActivity" />
         <activity android:name=".ui.GuideActivity" />
-        <activity android:name=".ui.TravelActivity"/>
-        <activity android:name=".ui.StatisticeActivity"/>
+        <activity android:name=".ui.TravelActivity" />
+        <activity android:name=".ui.StatisticeActivity" />
+        <activity android:name=".ui.WebViewActivity"></activity>
     </application>
 
 </manifest>

@@ -103,20 +103,20 @@ public class SplashActivity extends BaseActivity {
         final String account = ShareUtils.getString(this, "account", "");
         final String password = ShareUtils.getString(this, "password", "");
 
-        JMessageClient.login(account, password, new BasicCallback() {
-            @Override
-            public void gotResult(int code, String result) {
-                if (code == 0) {
+//        JMessageClient.login(account, password, new BasicCallback() {
+//            @Override
+//            public void gotResult(int code, String result) {
+//                if (code == 0) {
                     // 登录 爱宝车账号
                     loginAccount(account, password);
-                } else {
-                    Message message = new Message();
-                    message.obj = result;
-                    message.what = StaticClass.LOGIN_FAIL;
-                    handler.sendMessage(message);
-                }
-            }
-        });
+//                } else {
+//                    Message message = new Message();
+//                    message.obj = result;
+//                    message.what = StaticClass.LOGIN_FAIL;
+//                    handler.sendMessage(message);
+//                }
+//            }
+//        });
     }
 
     private void loginAccount(final String account, final String password) {
