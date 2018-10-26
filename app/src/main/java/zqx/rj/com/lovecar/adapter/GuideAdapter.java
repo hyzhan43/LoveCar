@@ -1,28 +1,16 @@
 package zqx.rj.com.lovecar.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lzy.ninegrid.ImageInfo;
-import com.lzy.ninegrid.NineGridView;
-import com.lzy.ninegrid.preview.NineGridViewClickAdapter;
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import zqx.rj.com.lovecar.R;
-import zqx.rj.com.lovecar.entity.Article;
-import zqx.rj.com.lovecar.entity.GuideInfo;
-import zqx.rj.com.lovecar.entity.MomentInfo;
 import zqx.rj.com.lovecar.entity.response.ArticleItem;
 import zqx.rj.com.lovecar.utils.UtilTools;
 

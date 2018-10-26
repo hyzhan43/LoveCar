@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import zqx.rj.com.lovecar.R;
 import zqx.rj.com.lovecar.entity.SamePeopleData;
+import zqx.rj.com.lovecar.utils.UtilTools;
 
 /**
  * 项目名：  LoveCar
@@ -21,7 +23,7 @@ import zqx.rj.com.lovecar.entity.SamePeopleData;
  * 描述：    TODO
  */
 
-public class SamePeopleAdapter extends BaseAdapter{
+public class SamePeopleAdapter extends BaseAdapter {
 
     private Context context;
     private List<SamePeopleData> dataList;
@@ -52,11 +54,12 @@ public class SamePeopleAdapter extends BaseAdapter{
 
         ViewHolder viewHolder = null;
 
-        if (convertView == null){
+        if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.same_people_item,
                     null);
 
+            viewHolder.icon = convertView.findViewById(R.id.civ_icon);
             viewHolder.name = convertView.findViewById(R.id.tv_name);
             viewHolder.time = convertView.findViewById(R.id.tv_time);
             viewHolder.startPlace = convertView.findViewById(R.id.tv_start_place);
@@ -65,12 +68,16 @@ public class SamePeopleAdapter extends BaseAdapter{
             viewHolder.remarks = convertView.findViewById(R.id.tv_remarks);
 
             convertView.setTag(viewHolder);
-        }else {
+        } else {
 
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+
         data = dataList.get(position);
+
+        UtilTools.loadImage(context, data.getThumb(), viewHolder.icon);
+
         viewHolder.name.setText(data.getPublisher());
         viewHolder.time.setText(data.getCreate_time());
         viewHolder.startPlace.setText(data.getFrom_place());
@@ -81,7 +88,8 @@ public class SamePeopleAdapter extends BaseAdapter{
         return convertView;
     }
 
-    class ViewHolder{
+    class ViewHolder {
+        CircleImageView icon;
         TextView name;
         TextView time;
         TextView startPlace;

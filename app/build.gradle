@@ -89,8 +89,13 @@ dependencies {
     // litePal 数据库框架
     compile 'org.litepal.android:core:1.6.1'
 
-    // 九宫格图片
-    compile 'com.lzy.widget:ninegridview:0.2.0'
+    // 九宫格图片  发布
+    compile 'cn.bingoogolapple:bga-photopicker:1.2.7@aar'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'cn.bingoogolapple:bga-baseadapter:1.2.7@aar'
+
+    // 权限
+    compile 'pub.devrel:easypermissions:1.0.1'
 
     // chart
     compile 'com.github.blackfizz:eazegraph:1.2.2@aar'

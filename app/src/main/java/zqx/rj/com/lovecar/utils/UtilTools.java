@@ -102,7 +102,7 @@ public class UtilTools {
     public static void loadImage(Context context, String url, ImageView image) {
         Picasso.with(context)
                 .load(url)
-                .error(R.drawable.ic_default_image)
+//                .error(R.drawable.ic_default_image)
                 .into(image);
     }
 }

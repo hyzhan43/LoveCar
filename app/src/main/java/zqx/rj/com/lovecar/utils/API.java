@@ -62,4 +62,11 @@ public class API {
 
     // 获取指南列表
     public static final String GET_ARTICLE = BASE_URL + "/Article/getArticleList";
+
+    // 获取票圈列表
+    public static final String GET_CIRCLE = BASE_URL + "/circle/getcirclelist";
+
+    // 发布票圈
+    public static final String POST_CIRCLE = BASE_URL + "/circle/publishCircle";
+
 }

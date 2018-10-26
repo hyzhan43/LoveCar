@@ -1,15 +1,10 @@
 package zqx.rj.com.lovecar.application;
 
-import android.app.Application;
-
-import com.lzy.ninegrid.NineGridView;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import org.litepal.LitePalApplication;
 
 import cn.jpush.im.android.api.JMessageClient;
-import zqx.rj.com.lovecar.fragment.MainFragment;
-import zqx.rj.com.lovecar.utils.PicassoImageLoader;
 
 /**
  * 项目名：  LoveCar
@@ -33,6 +28,5 @@ public class BaseApplication extends LitePalApplication{
         JMessageClient.setDebugMode(true);
         JMessageClient.init(this);
 
-        NineGridView.setImageLoader(new PicassoImageLoader());
     }
 }

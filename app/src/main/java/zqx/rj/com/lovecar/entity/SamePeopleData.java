@@ -17,6 +17,7 @@ public class SamePeopleData {
     private String departure_time;
     private String phone;
     private String pic;
+    private String thumb;
     private String create_time;
     private String user_id;
     private String publisher;
@@ -43,6 +44,14 @@ public class SamePeopleData {
 
     public String getFrom_place() {
         return from_place;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public void setFrom_place(String from_place) {
