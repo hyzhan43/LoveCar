@@ -62,5 +62,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="10分钟前" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/delete"
+            android:textColor="@android:color/holo_blue_dark"/>
     </LinearLayout>
 </LinearLayout>

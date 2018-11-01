@@ -3,6 +3,8 @@ package zqx.rj.com.lovecar.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -67,6 +69,7 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
     private final static int NET_WORK = -1;
     private final static int SUCCESS = 1;
     private final static int ERROR = 2;
+    private final static int DELETE_SUC = 5;
 
     private final static int PUBLISH_SUC = 3;
     private final static int PUBLISH_FAIL = 4;
@@ -100,13 +103,16 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
                 case NET_WORK:
                     T.show(activity, activity.getString(R.string.network_fail));
                     break;
-
                 case PUBLISH_SUC:
                     T.show(activity, "发布成功");
                     activity.updateMomentData((Moment) msg.obj);
                     break;
                 case PUBLISH_FAIL:
                     T.show(activity, "发布失败");
+                    break;
+                case DELETE_SUC:
+                    T.show(activity, "删除成功");
+                    activity.mMomentAdapter.removeItem((Integer) msg.obj);
                     break;
             }
         }
@@ -126,6 +132,7 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
         handler = new MyHandler(this);
 
         ImageView mIvCamera = findViewById(R.id.iv_camera);
+        mIvCamera.setVisibility(View.VISIBLE);
         mIvCamera.setOnClickListener(this);
 
         TextView mTvTitle = findViewById(R.id.tv_title);
@@ -300,7 +307,7 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
         photoPreviewWrapper();
     }
 
-    private class MomentAdapter extends BGARecyclerViewAdapter<MomentsInfo> {
+    private class MomentAdapter extends BGARecyclerViewAdapter<MomentsInfo> implements View.OnClickListener {
 
         @SuppressLint("UseSparseArrays")
         public MomentAdapter(RecyclerView recyclerView) {
@@ -321,6 +328,16 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
             TextView time = helper.getView(R.id.tv_time);
             time.setText(momentsInfo.getCreate_time());
 
+            TextView delete = helper.getView(R.id.tv_delete);
+            if (momentsInfo.getCurrent_user()) {
+                delete.setVisibility(View.VISIBLE);
+                Log.d("LST", "position" + position + "id =>" + momentsInfo.getId());
+            } else {
+                delete.setVisibility(View.GONE);
+            }
+            delete.setTag(position);
+            delete.setOnClickListener(this);
+
             TextView content = helper.getView(R.id.tv_content);
             content.setText(momentsInfo.getContent());
             setContent(helper, position);
@@ -329,6 +346,53 @@ public class MomentsActivity extends BaseActivity implements View.OnClickListene
             ninePhotoLayout.setDelegate(MomentsActivity.this);
             ninePhotoLayout.setData(momentsInfo.getImg_items());
         }
+
+        @Override
+        public void onClick(final View v) {
+            AlertDialog dialog = new AlertDialog
+                    .Builder(MomentsActivity.this)
+                    .setTitle("提示")
+                    .setMessage("确定删除吗？")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sendDeletedRequest((Integer) v.getTag());
+                        }
+                    })
+                    .show();
+
+        }
+    }
+
+    private void sendDeletedRequest(final Integer position) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttp okHttp = new OkHttp();
+
+                String id = mMomentAdapter.getData().get(position).getId();
+
+                Log.d("LST", "deleted id=>" + id + "position=>" + position);
+                RequestBody body = new FormBody.Builder()
+                        .add("id", id)
+                        .build();
+
+                OkhttpResponse response = okHttp.post(MomentsActivity.this, API.DELETE_CIRCLE, body);
+                if (response.getCode() == OkhttpResponse.STATE_OK) {
+                    Message message = new Message();
+                    message.what = DELETE_SUC;
+                    message.obj = position;
+                    handler.sendMessage(message);
+                } else {
+                    handler.sendEmptyMessage(NET_WORK);
+                }
+            }
+        }).start();
     }
 
     private void setContent(BGAViewHolderHelper helper, final int position) {

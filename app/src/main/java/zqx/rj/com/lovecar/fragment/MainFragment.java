@@ -96,6 +96,7 @@ public class MainFragment extends BaseFragment implements AbsListView.OnScrollLi
     public boolean isEnd = false;
 
     private static final int UPLOAD_NEW_TICKETS = 1;
+    private static final int LOAD_END = 2;
     private static Handler handler;
 
 
@@ -116,7 +117,6 @@ public class MainFragment extends BaseFragment implements AbsListView.OnScrollLi
                 intent = new Intent(getActivity(), GuideActivity.class);
                 break;
             case R.id.ll_travel:
-                intent = new Intent(getActivity(), TravelActivity.class);
                 T.show(getContext(), "该功能暂未实现");
                 break;
         }
@@ -162,6 +162,11 @@ public class MainFragment extends BaseFragment implements AbsListView.OnScrollLi
                 case StaticClass.NETWORK_FAIL:
                     T.show(fragment.getActivity(), fragment.getString(R.string.network_fail));
                     break;
+                case LOAD_END:
+                    T.show(fragment.getActivity(), "没有更多数据");
+                    fragment.footView.setVisibility(View.GONE);
+                    break;
+
                 case UPLOAD_NEW_TICKETS:
                     fragment.newRounteDataList.clear();
                     fragment.initNewRounteDatas(1);
@@ -204,7 +209,7 @@ public class MainFragment extends BaseFragment implements AbsListView.OnScrollLi
                         .build();
                 OkHttp okHttp = new OkHttp();
                 OkhttpResponse response = okHttp.post(getContext(), API.NEW_ROUNTE, body);
-                if (response.getCode() == OkhttpResponse.STATE_OK) {
+                if (response.getCode() == OkhttpResponse.STATE_OK ) {
                     parseJsonWithGson(response.getData());
                 } else {
                     handler.sendEmptyMessage(StaticClass.NETWORK_FAIL);
@@ -216,39 +221,18 @@ public class MainFragment extends BaseFragment implements AbsListView.OnScrollLi
     private void parseJsonWithGson(String data) {
         NewRounteRsp newRounteRsp = UtilTools.jsonToBean(data, NewRounteRsp.class);
 
-        if (newRounteRsp.getCode() == 1) {
-            tempList.addAll(newRounteRsp.getData());
-            handler.sendEmptyMessageDelayed(StaticClass.LOAD_FINISH, 500);
+        if (newRounteRsp.getCode() == 1 ) {
+            if (newRounteRsp.getData() != null){
+                tempList.addAll(newRounteRsp.getData());
+                handler.sendEmptyMessageDelayed(StaticClass.LOAD_FINISH, 500);
+            }else {
+                handler.sendEmptyMessage(LOAD_END);
+            }
         } else {
             handler.sendEmptyMessageDelayed(StaticClass.NETWORK_FAIL, 1500);
         }
     }
 
-    private void parseJsonWithGson2(String data) {
-
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(data);
-            String code = jsonObject.getString("code");
-            if (code.equals("1")) {
-                JSONArray jsonArray = jsonObject.getJSONArray("data");
-
-                Gson gson = new Gson();
-                //  Gson 映射 NewRounteData
-                List<NewRounteData> newList = gson.fromJson(jsonArray.toString(),
-                        new TypeToken<List<NewRounteData>>() {
-                        }.getType());
-
-                tempList.addAll(newList);
-                handler.sendEmptyMessageDelayed(StaticClass.LOAD_FINISH, 500);
-            } else if (code.equals("0")) {
-                handler.sendEmptyMessageDelayed(StaticClass.NETWORK_FAIL, 1500);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void initImages() {
         images = new ArrayList<>();

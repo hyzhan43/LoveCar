@@ -70,8 +70,7 @@ public class NewRounteAdapter extends BaseAdapter{
         if (convertView == null){
             viewHolder = new ViewHolder();
 
-            convertView = LayoutInflater.from(context).inflate(R.layout.new_rounte_item,
-                    null, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.new_rounte_item, null);
 
             viewHolder.tv_time = convertView.findViewById(R.id.tv_time);
             viewHolder.main_size = convertView.findViewById(R.id.main_size);

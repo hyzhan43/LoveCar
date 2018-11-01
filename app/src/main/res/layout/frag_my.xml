@@ -33,12 +33,12 @@
                 android:textSize="20dp" />
 
             <Button
+                android:id="@+id/btn_status"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_below="@+id/account_name"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/edit_bg"
-                android:text="@string/certified"
                 android:textColor="@color/color_main"
                 android:textSize="16dp" />
         </RelativeLayout>
@@ -80,6 +80,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_my_publish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

@@ -1,44 +1,22 @@
 package zqx.rj.com.lovecar.entity;
 
 /**
- * 项目名：  LoveCar
- * 包名：    zqx.rj.com.lovecar.entity
- * 文件名：  NewRounteData
- * 创建者：  ZQX
- * 创建时间：2018/4/20 17:30
- * 描述：    最新路线实体类
+ * author：  HyZhan
+ * created： 2018/11/1 18:53
+ * desc：    TODO
  */
 
-public class NewRounteData {
+public class Ticket {
 
-    // 车票 ID
-    private String id;
-    // 负责人
     private String publisher;
-    // 上车地点
     private String from_place;
-    // 下车地点
     private String to_place;
-    // 车牌号码
     private String plate_number;
-    // 价格
     private String price;
-    //包车时间
     private String departure_time;
-    // 车票数量
     private String surplus;
-    // 创建时间
-    private String create_time;
-    // 手机号码
     private String phone;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String username;
 
     public String getPublisher() {
         return publisher;
@@ -96,19 +74,19 @@ public class NewRounteData {
         this.surplus = surplus;
     }
 
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

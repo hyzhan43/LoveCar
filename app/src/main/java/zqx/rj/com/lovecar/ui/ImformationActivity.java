@@ -17,9 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -102,7 +99,6 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
         initSexDialog();
     }
 
-
     private void initDialog() {
         mPhotoDialog = new CustomDialog(this,
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -139,7 +135,6 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
 
         mIcon = findViewById(R.id.my_icon);
         UtilTools.updateIcon(this, mIcon);
-
 
         tv_nickname = findViewById(R.id.tv_nickname);
         tv_sex = findViewById(R.id.tv_sex);
@@ -403,25 +398,6 @@ public class ImformationActivity extends BaseActivity implements View.OnClickLis
             ShareUtils.putString(this, "icon_url", iconRsp.getData().getThumb());
         }else {
             Log.d("LST", "错误->" + iconRsp.getMessage());
-        }
-    }
-
-    private void parseJson2(String resposne) {
-        try {
-            JSONObject jsonObject = new JSONObject(resposne);
-            String code = jsonObject.getString("code");
-            if (code.equals("1")) {
-                jsonObject = jsonObject.getJSONObject("data");
-                String url = jsonObject.getString("imgUrl");
-                ShareUtils.putString(this, "icon_url", url);
-
-            } else if (code.equals("0")) {
-
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 

@@ -121,4 +121,6 @@
     <string name="ticket_moments">票圈</string>
     <string name="publish_suc">发布成功</string>
     <string name="look">查看</string>
+    <string name="delete">删除</string>
+    <string name="crowd_tip">购票人群分析</string>
 </resources>

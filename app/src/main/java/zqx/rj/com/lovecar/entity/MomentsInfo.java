@@ -14,6 +14,8 @@ public class MomentsInfo {
     private String content;
     private String thumb;
     private String username;
+    private String id;
+    private Boolean current_user;
     private ArrayList<String> img_items;
 
     public String getCreate_time() {
@@ -40,12 +42,28 @@ public class MomentsInfo {
         this.thumb = thumb;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Boolean getCurrent_user() {
+        return current_user;
+    }
+
+    public void setCurrent_user(Boolean current_user) {
+        this.current_user = current_user;
     }
 
     public ArrayList<String> getImg_items() {

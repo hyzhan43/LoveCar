@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_camera"
-            android:visibility="visible"
+            android:visibility="gone"
             android:contentDescription="@string/app_name" />
     </RelativeLayout>
 </LinearLayout>

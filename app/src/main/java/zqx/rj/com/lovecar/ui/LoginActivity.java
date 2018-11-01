@@ -219,9 +219,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         LoginRsp loginRsp = new Gson().fromJson(data, LoginRsp.class);
 
-        Log.d("LST", "code->" + loginRsp.getCode());
-        Log.d("LST", "msg->" + loginRsp.getMessage());
-
         if (loginRsp.getCode() == 1) {
             ShareUtils.putString(this, "token", loginRsp.getData().getAccessToken());
             ShareUtils.putString(this, "phone", et_account.getText().toString());

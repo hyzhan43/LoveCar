@@ -69,4 +69,17 @@ public class API {
     // 发布票圈
     public static final String POST_CIRCLE = BASE_URL + "/circle/publishCircle";
 
+    // 删除票圈
+    public static final String DELETE_CIRCLE = BASE_URL + "/circle/deleteCircle";
+
+    // 获取用户发布的车票
+    public static final String GET_PUBLISH = BASE_URL + "/auth/tickets";
+
+    // 获取车票详细信息
+    public static final String GET_AUTH_TICKET = BASE_URL + "/auth/ticket";
+
+    //获得某个班次购买人群
+    public static final String GET_CROWD = BASE_URL + "/auth/classesCrowd";
+
+    public static final String GET_SITUATION = BASE_URL + "/auth/ticketSituation";
 }
